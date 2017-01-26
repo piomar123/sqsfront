@@ -1,0 +1,21 @@
+{
+  "name": "sqsfront",
+  "version": "0.1.0",
+  "description": "AWS SQS image processing front-end",
+  "author": "piomar123",
+  "license": "MIT",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/piomar123/sqsfront.git"
+  },
+  "private": true,
+  "dependencies": {
+    "async": "2.1.4",
+    "aws-sdk": "2.8.0",
+    "ejs": "2.5.5",
+    "express": "4.14.0",
+    "moment": "2.5.1",
+    "uuid": "3.0.1"
+  }
+}
