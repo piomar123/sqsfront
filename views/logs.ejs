@@ -1,0 +1,31 @@
+<div class="container">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">Logs</h3>
+				</div>
+				<div class="panel-body">
+  				<div class="row">
+  					<div class="col-md-12">
+  						<table class="table-hover table-condensed">
+  						<tr><th>Timestamp</th><th>Level</th><th>Message</th><th>Details</th></tr>
+  							<% entries.forEach(function(entry){ %>
+  							<tr>
+  								<td><%= entry.timestamp %></td>
+  								<td><%= entry.level %></td>
+  								<td><%= entry.message %></td>
+  								<% delete entry.timestamp; delete entry.level; delete entry.message; delete entry.id; %>
+  								<td style="word-wrap: break-word; max-width: 600px;"><% Object.keys(entry).forEach(function(key){ %>
+  								<b><%= key %>:</b> <%= entry[key] %><br/><% }); %>
+  								</td>
+  							</tr>
+  							<% }); %>
+  						</table>
+  					</div>
+          </div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
