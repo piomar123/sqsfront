@@ -14,6 +14,7 @@ var logsController = require("./controllers/logs");
 app.set("view engine", "ejs");
 app.disable("view cache");
 app.use("/static", express.static("views/static", { fallthrough:false, index:false }));
+app.enable("trust proxy");  // forward client IP when behind Elastic Load Balancer
 
 app.get("/upload", uploadController.showUploadForm);
 app.get("/logs", logsController.showLogs);

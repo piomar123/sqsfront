@@ -27,21 +27,12 @@ var log = function(level, message, details){
 	var logParams = {
 		DomainName: DB_DOMAIN,
 		ItemName: LOG_PREFIX + uuid.v1(),
-		Attributes: [
-			{
-				Name: "timestamp",
-				Value: moment().format("YYYY-MM-DD HH:mm:ss.SSS")
-			},
-			{
-				Name: "level",
-				Value: level
-			},
-			{
-				Name: "message",
-				Value: message
-			}
-		]
+		Attributes: []
 	};
+	details.timestamp = moment().format("YYYY-MM-DD HH:mm:ss.SSS");
+	details.level = level;
+	details.message = message;
+	details.module = "frontend";
 	Object.keys(details).forEach(function(key){
 		logParams.Attributes.push({
 			Name: key,
