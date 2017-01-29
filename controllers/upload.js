@@ -4,6 +4,7 @@ var sqs = new aws.SQS();
 var fs = require("fs");
 var _ = require("lodash");
 var logger = require("../logic/logger");
+var utils = require("../utils");
 var CONFIG = require("../config");
 
 if(!fs.existsSync(CONFIG.AWS_CONFIG_FILE)) {
@@ -23,7 +24,6 @@ exports.showUploadForm = function(request, res) {
     });
   }
 
-  var myAddress = request.protocol + "://" + request.get("host");
   var formGen = new AwsS3Form({
     accessKeyId:      awsConfig.accessKeyId,
     secretAccessKey:	awsConfig.secretAccessKey,
@@ -36,7 +36,7 @@ exports.showUploadForm = function(request, res) {
   var metaUploader = { "x-amz-meta-uploader": request.connection.remoteAddress };
 
   var s3form = formGen.create("${filename}", {
-    redirectUrlTemplate: myAddress + "/s3done",
+    redirectUrlTemplate: utils.myAddress(request) + "/s3done",
     customConditions: [
       metaUploader
     ]

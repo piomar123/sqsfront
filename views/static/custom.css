@@ -1,4 +1,11 @@
 /* Custom stylesheet */
+.x-img-center {
+  margin: 0 auto;
+}
+
+.x-jumbotron-compact {
+  padding: 4px;
+}
 
 /* Sticky footer */
 html, body {
@@ -17,7 +24,6 @@ html, body {
     padding: 0 0 60px;
 }
 
-/* Set the fixed height of the footer here */
 #page-footer {
     height: 60px;
     margin-bottom: 0;
