@@ -7,6 +7,7 @@ var LOG_PREFIX = "lab-log-";
 var simpledb = new aws.SimpleDB();
 
 simpledb.createDomain({ DomainName: DB_DOMAIN }, function(err, data) {
+	/* jshint unused:vars */
 	if(err) {
 		console.log(err, err.stack);
 		return;
@@ -14,13 +15,13 @@ simpledb.createDomain({ DomainName: DB_DOMAIN }, function(err, data) {
 	console.log("Created SimpleDB domain.");
 });
 
-
-var afterLogFunc = function(err, logParams){
+var afterLogFunc = function(err, logParams, message){
 	if(err) {
 		console.log(err);
 		console.log(logParams);
 		return;
 	}
+	console.log(message);
 };
 
 var log = function(level, message, details){
@@ -40,9 +41,8 @@ var log = function(level, message, details){
 		});
 	});
 	simpledb.putAttributes(logParams,
-		function(err, data) {
-      console.log(data);
-      return afterLogFunc(err, logParams);
+		function(err /*, data*/) {
+      return afterLogFunc(err, logParams, message);
     });
 };
 

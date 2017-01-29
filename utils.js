@@ -1,6 +1,5 @@
-var fs = require('fs');
-var crypto = require('crypto');
-var async = require("async");
+var fs = require("fs");
+var crypto = require("crypto");
 
 var calculateDigest = function(algorithm, doc, encoding){
 	var digest;
