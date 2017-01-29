@@ -79,7 +79,7 @@ exports.s3uploadDone = function(request, res, next){
       s3bucket: request.query.bucket,
       s3key: request.query.key
     };
-    logger.info("Uploaded image thumbnail request to SQS", logData);
+    logger.info("Image thumbnail request to SQS", logData);
     request.uploadSuccess = true;
     exports.showUploadForm(request, res, next);
   };
