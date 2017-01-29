@@ -1,14 +1,12 @@
 var aws = require("aws-sdk");
 var s3 = new aws.S3();
 var _ = require("lodash");
-
-var S3_BUCKET = "lab4-weeia";
-var S3_KEY_PREFIX = "piotr.marcinczyk/project/upload/";
+var CONFIG = require("../config");
 
 exports.showGallery = function(request, res, next){
   s3.listObjectsV2({
-    Bucket: S3_BUCKET,
-    Prefix: S3_KEY_PREFIX
+    Bucket: CONFIG.S3_BUCKET,
+    Prefix: CONFIG.S3_KEY_PREFIX_UPLOAD
   }, afterListedObjects);
 
   function afterListedObjects(err, data){
@@ -16,10 +14,10 @@ exports.showGallery = function(request, res, next){
       next(err);
     }
     console.log(data.Contents);
-    var obj = data.Contents[1];
+    var obj = data.Contents[2];
     var filename = _.last(obj.Key.split("/"));
     var url = s3.getSignedUrl("getObject", {
-      Bucket: S3_BUCKET,
+      Bucket: CONFIG.S3_BUCKET,
       Key: obj.Key
     });
     var thumbs = [

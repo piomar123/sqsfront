@@ -1,12 +1,11 @@
 var aws = require("aws-sdk");
 var uuid = require("uuid");
 var moment = require("moment");
-var DB_DOMAIN = "piotr.marcinczyk.logs";
-var LOG_PREFIX = "lab-log-";
+var CONFIG = require("../config");
 
 var simpledb = new aws.SimpleDB();
 
-simpledb.createDomain({ DomainName: DB_DOMAIN }, function(err, data) {
+simpledb.createDomain({ DomainName: CONFIG.DB_DOMAIN }, function(err, data) {
 	/* jshint unused:vars */
 	if(err) {
 		console.log(err, err.stack);
@@ -26,8 +25,8 @@ var afterLogFunc = function(err, logParams, message){
 
 var log = function(level, message, details){
 	var logParams = {
-		DomainName: DB_DOMAIN,
-		ItemName: LOG_PREFIX + uuid.v1(),
+		DomainName: CONFIG.DB_DOMAIN,
+		ItemName: CONFIG.LOG_PREFIX + uuid.v1(),
 		Attributes: []
 	};
 	details.timestamp = moment().format("YYYY-MM-DD HH:mm:ss.SSS");
@@ -49,7 +48,7 @@ var log = function(level, message, details){
 var getLogs = function(cb){
 	simpledb.select({
 		SelectExpression: "SELECT * FROM `"+
-			DB_DOMAIN +
+			CONFIG.DB_DOMAIN +
 			"` WHERE timestamp IS NOT NULL ORDER BY timestamp DESC"
 	}, function(err, data){
 		if(err) {

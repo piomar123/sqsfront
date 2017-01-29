@@ -4,20 +4,12 @@ var sqs = new aws.SQS();
 var fs = require("fs");
 var _ = require("lodash");
 var logger = require("../logic/logger");
+var CONFIG = require("../config");
 
-var AWS_CONFIG_FILE = "./config.json";
-var S3_BUCKET = "lab4-weeia";
-var S3_KEY_PREFIX = "piotr.marcinczyk/project/upload/";
-
-var SQS_MESSAGE_TEXT = "Request to create image thumbnail.";
-var SQS_URL = "https://sqs.us-west-2.amazonaws.com/983680736795/MarcinczykSQS";
-var SQS_MSG_ID = "S3projSQS";
-var ACTION_THUMBNAIL = "thumbnail";
-
-if(!fs.existsSync(AWS_CONFIG_FILE)) {
-	throw new Error("Unable to read config file: " + AWS_CONFIG_FILE);
+if(!fs.existsSync(CONFIG.AWS_CONFIG_FILE)) {
+	throw new Error("Unable to read config file: " + CONFIG.AWS_CONFIG_FILE);
 }
-var awsConfig = JSON.parse(fs.readFileSync(AWS_CONFIG_FILE, { encoding:"utf8" }));
+var awsConfig = JSON.parse(fs.readFileSync(CONFIG.AWS_CONFIG_FILE, { encoding:"utf8" }));
 
 exports.showUploadForm = function(request, res) {
   var successFilename = null;
@@ -36,8 +28,8 @@ exports.showUploadForm = function(request, res) {
     accessKeyId:      awsConfig.accessKeyId,
     secretAccessKey:	awsConfig.secretAccessKey,
     region:           awsConfig.region,
-    bucket:           S3_BUCKET,
-    keyPrefix:        S3_KEY_PREFIX,
+    bucket:           CONFIG.S3_BUCKET,
+    keyPrefix:        CONFIG.S3_KEY_PREFIX_UPLOAD,
     acl:              "private"
   });
 
@@ -49,7 +41,7 @@ exports.showUploadForm = function(request, res) {
       metaUploader
     ]
   });
-  s3form.bucket = S3_BUCKET;
+  s3form.bucket = CONFIG.S3_BUCKET;
   _.extend(s3form.fields, metaUploader);
 
   res.render("index", {
@@ -86,13 +78,13 @@ exports.s3uploadDone = function(request, res, next){
 
   sqs.sendMessage(
     {
-      MessageBody: SQS_MESSAGE_TEXT,
-      QueueUrl: SQS_URL,
+      MessageBody: "Request to create image thumbnail.",
+      QueueUrl: CONFIG.SQS_URL,
       MessageAttributes: {
-        id: { DataType: "String", StringValue: SQS_MSG_ID },
+        id: { DataType: "String", StringValue: CONFIG.SQS_MSG_ID },
         s3bucket: { DataType: "String", StringValue: request.query.bucket },
         s3key: { DataType: "String", StringValue: request.query.key },
-        action: { DataType: "String", StringValue: ACTION_THUMBNAIL }
+        action: { DataType: "String", StringValue: CONFIG.ACTION_THUMBNAIL }
       }
     }, afterSentToSQS);
 };

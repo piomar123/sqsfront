@@ -1,10 +1,9 @@
 var express = require("express");
 var app = express();
 var aws = require("aws-sdk");
+var CONFIG = require("./config");
 
-var AWS_CONFIG_FILE = "./config.json";
-var PORT = 8080;
-aws.config.loadFromPath(AWS_CONFIG_FILE);
+aws.config.loadFromPath(CONFIG.AWS_CONFIG_FILE);
 
 var uploadController = require("./controllers/upload");
 var imagesController = require("./controllers/images");
@@ -20,4 +19,4 @@ app.get("/s3done", uploadController.s3uploadDone);
 app.get("/gallery", imagesController.showGallery);
 app.get("/logs", logsController.showLogs);
 
-app.listen(PORT);
+app.listen(CONFIG.SERVER_PORT);
