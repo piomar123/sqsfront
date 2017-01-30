@@ -9,13 +9,20 @@
   				<div class="row">
   					<div class="col-md-12">
   						<table class="table-hover table-condensed">
-  						<tr><th>Timestamp</th><th>Level</th><th>Message</th><th>Details</th></tr>
+  						<tr><th>Timestamp</th>
+								<th>Level</th>
+								<th>Module</th>
+								<th>Host</th>
+								<th>Message</th>
+								<th>Details</th></tr>
   							<% entries.forEach(function(entry){ %>
   							<tr>
-  								<td><%= entry.timestamp %></td>
-  								<td><%= entry.level %></td>
-  								<td><%= entry.message %></td>
-  								<% delete entry.timestamp; delete entry.level; delete entry.message; delete entry.id; %>
+  								<td><%= entry.timestamp %></td><% delete entry.timestamp; %>
+  								<td><%= entry.level %></td><% delete entry.level; %>
+									<td><%= entry.module %></td><% delete entry.module; %>
+									<td><%= entry.host %></td><% delete entry.host; %>
+  								<td><%= entry.message %></td><% delete entry.message; %>
+  								<% delete entry.id; %>
   								<td style="word-wrap: break-word; max-width: 600px;"><% Object.keys(entry).forEach(function(key){ %>
   								<b><%= key %>:</b> <%= entry[key] %><br/><% }); %>
   								</td>
