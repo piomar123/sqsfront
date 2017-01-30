@@ -7,6 +7,20 @@
   padding: 4px;
 }
 
+.image {
+    position:relative;
+    overflow:hidden;
+    padding-bottom:100%;
+}
+.image img {
+    position:absolute;
+}
+
+label.thumb-caption {
+  font-weight: normal;
+  text-overflow: ellipsis;
+}
+
 /* Sticky footer */
 html, body {
     height: 100%;
