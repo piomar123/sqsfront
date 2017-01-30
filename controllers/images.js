@@ -17,16 +17,33 @@ exports.showGallery = function(request, res, next){
     var thumbs = [];
     data.Contents.forEach(function(obj){
       var filename = _.last(obj.Key.split("/"));
-      if(filename === "") return;
-      var url = s3.getSignedUrl("getObject", {
+      if(!filename) return;
+      var thumb = s3.getSignedUrl("getObject", {
         Bucket: CONFIG.S3_BUCKET,
         Key: obj.Key
       });
-      thumbs.push({ name: filename, url: url });
+      thumbs.push({ name: filename, thumb: thumb });
     });
     res.render("index", {
       ejs: { view: "gallery", title: "Gallery" },
       thumbs: thumbs
     });
   }
+};
+
+exports.showImage = function(request, res, next){
+  var s3key = CONFIG.S3_KEY_PREFIX_UPLOAD + request.params.key;
+  var url = s3.getSignedUrl("getObject", {
+    Bucket: CONFIG.S3_BUCKET,
+    Key: s3key
+  });
+  if(!url){
+    return next();
+  }
+  res.redirect(303, url);
+};
+
+exports.processImages = function(request, res, next){
+  console.log(request.body.images);
+  return next();
 };

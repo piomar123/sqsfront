@@ -1,5 +1,6 @@
 var express = require("express");
 var app = express();
+var bodyParser = require("body-parser")
 var aws = require("aws-sdk");
 var CONFIG = require("./config");
 
@@ -14,11 +15,13 @@ app.set("view engine", "ejs");
 app.disable("view cache");
 app.enable("trust proxy");  // forward client IP when behind Elastic Load Balancer
 app.use("/static", express.static("views/static", { fallthrough:false, index:false }));
-
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/upload", uploadController.showUploadForm);
 app.get("/s3done", uploadController.s3uploadDone);
 app.get("/gallery", imagesController.showGallery);
+app.get("/image/:key*", imagesController.showImage);
+app.post("/process", imagesController.processImages);
 app.get("/logs", logsController.showLogs);
 
 // this goes last:
