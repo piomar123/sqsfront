@@ -16,19 +16,23 @@
 	</div>
 <div class="container-fluid">
 	<div class="row">
-    <% thumbs.forEach(function(entry){ %>
+    <% var i = 0; thumbs.forEach(function(entry){ %>
 			<div class="col-lg-3 col-sm-4 col-xs-6">
 				<div class="thumbnail">
 					<a href="/image/<%= entry.name %>">
-						<img class="img-responsive" src="<%= entry.thumb %>" />
+						<img class="img-responsive" src="<%= entry.thumb %>" title="<%= entry.name %>" alt="<%= entry.name %>" />
 					</a>
 					<div class="caption">
-						<p style="word-wrap: break-word;"><input type="checkbox" name="images[]" value="<%= entry.name %>" />
-						<%= entry.name %></p>
+						<div class="checkbox x-no-margin">
+							<label for="image-<%= i %>" class="x-thumb-label">
+								<input type="checkbox" id="image-<%= i %>" name="images[]" value="<%= entry.name %>" />
+								<%= entry.name %>
+							</label>
+						</div>
 					</div>
 				</div>
 			</div>
-    <% }); %>
+    <% i++; }); %>
 		</div>
 	</div>
 </div>

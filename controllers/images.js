@@ -45,5 +45,9 @@ exports.showImage = function(request, res, next){
 
 exports.processImages = function(request, res, next){
   console.log(request.body.images);
+  console.log(request.body.operations);
+  request.body.images.forEach(function(entry){
+
+  });
   return next();
 };

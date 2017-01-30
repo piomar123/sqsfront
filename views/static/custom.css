@@ -7,6 +7,17 @@
   padding: 4px;
 }
 
+label.x-thumb-label {
+  font-weight: normal;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.x-no-margin {
+  margin: 0;
+}
+
 /* Sticky footer */
 html, body {
     height: 100%;
