@@ -1,30 +1,42 @@
+<script>
+function selectAll(){
+	$(":checkbox").prop("checked", true);
+}
+</script>
 <form action="/process" method="post">
 	<div class="container">
 		<div class="row">
-			<div class="col-sm-12">
-				<div class="page-header">
-					<h1>Gallery</h1>
-				</div>
+			<div class="col-md-12">
+				<h1>Processing actions</h1>
+				<% var i = 0; actions.forEach(function(action){ %>
+					<div class="checkbox">
+						<label for="action-<%= i %>">
+							<input type="checkbox" name="actions[]" id="action-<%= i %>" value="<%= action.val %>">
+							<%= action.name %>
+						</label>
+					</div>
+				<% i++; }); %>
+				<input class="btn btn-success" type="submit" value="Process selected" />
 			</div>
-			<div class="row">
-				<div class="col-md-12">
-					<button>Select all</button>
-					<input type="submit" value="Process selected" />
-				</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-12" style="margin-bottom: 20px;">
+				<h1>Gallery</h1>
+				<a class="btn btn-info btn-sm" onclick="selectAll();">Select all images</a>
 			</div>
 		</div>
 	</div>
 <div class="container-fluid">
 	<div class="row">
     <% var i = 0; thumbs.forEach(function(entry){ %>
-			<div class="col-lg-3 col-sm-4 col-xs-6">
+			<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
 				<div class="thumbnail">
 					<a href="/image/<%= entry.name %>">
 						<img class="img-responsive" src="<%= entry.thumb %>" title="<%= entry.name %>" alt="<%= entry.name %>" />
 					</a>
-					<div class="caption">
+					<div class="caption x-thumb-caption">
 						<div class="checkbox x-no-margin">
-							<label for="image-<%= i %>" class="x-thumb-label">
+							<label for="image-<%= i %>" class="x-thumb-label" title="<%= entry.name %>">
 								<input type="checkbox" id="image-<%= i %>" name="images[]" value="<%= entry.name %>" />
 								<%= entry.name %>
 							</label>

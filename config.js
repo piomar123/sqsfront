@@ -8,5 +8,10 @@ module.exports = {
   S3_KEY_PREFIX_THUMBS: "piotr.marcinczyk/project/thumbs/",
   SQS_URL: "https://sqs.us-west-2.amazonaws.com/983680736795/MarcinczykSQS",
   SQS_MSG_ID: "S3projSQS",
-  ACTION_THUMBNAIL: "thumbnail"
+  ACTION_THUMBNAIL: "thumbnail",
+  ACTIONS: [
+    { val: "levels", name: "Auto levels" },
+    { val: "edge", name: "Edge detection" },
+    { val: "blur", name: "Gaussian blur" }
+  ]
 };
