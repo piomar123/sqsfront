@@ -12,6 +12,11 @@ label.x-thumb-label {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  vertical-align: bottom;
+}
+
+div.caption.x-thumb-caption {
+  padding: 4px;
 }
 
 .x-no-margin {
