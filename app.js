@@ -20,6 +20,7 @@ app.enable("trust proxy");  // forward client IP when behind Elastic Load Balanc
 app.use("/static", express.static("views/static", { fallthrough:false, index:false }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.get("/", function(request, res) { res.redirect(302, "/gallery"); });
 app.get("/upload", uploadController.showUploadForm);
 app.get("/s3done", uploadController.s3uploadDone);
 app.get("/gallery", imagesController.showGallery);

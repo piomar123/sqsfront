@@ -17,40 +17,40 @@ exports.showUploadForm = function(request, res, next) {
       host: request.hostname
     });
   }
-	aws.config.getCredentials(afterCredentialsRefresh);
+  aws.config.getCredentials(afterCredentialsRefresh);
 
-	function afterCredentialsRefresh(err){
-		if(err){
-			return next(err);
-		}
-		console.log("Region:" + aws.config.region);
-	  var formGen = new AwsS3Form({
-	    accessKeyId:      aws.config.credentials.accessKeyId,
-	    secretAccessKey:	aws.config.credentials.secretAccessKey,
-	    region:           aws.config.region,
-	    bucket:           CONFIG.S3_BUCKET,
-	    keyPrefix:        CONFIG.S3_KEY_PREFIX_UPLOAD,
-	    acl:              "private"
-	  });
+  function afterCredentialsRefresh(err){
+    if(err){
+    return next(err);
+    }
+    console.log("Region:" + aws.config.region);
+    var formGen = new AwsS3Form({
+      accessKeyId:      aws.config.credentials.accessKeyId,
+      secretAccessKey:	aws.config.credentials.secretAccessKey,
+      region:           aws.config.region,
+      bucket:           CONFIG.S3_BUCKET,
+      keyPrefix:        CONFIG.S3_KEY_PREFIX_UPLOAD,
+      acl:              "private"
+     });
 
-	  var metaUploader = { "x-amz-meta-uploader": request.connection.remoteAddress };
+    var metaUploader = { "x-amz-meta-uploader": request.connection.remoteAddress };
 
-	  var s3form = formGen.create("${filename}", {
-	    redirectUrlTemplate: utils.myAddress(request) + "/s3done",
-	    customConditions: [
-	      metaUploader
-	    ]
-	  });
-	  s3form.bucket = CONFIG.S3_BUCKET;
-	  _.extend(s3form.fields, metaUploader);
+    var s3form = formGen.create("${filename}", {
+      redirectUrlTemplate: utils.myAddress(request) + "/s3done",
+      customConditions: [
+        metaUploader
+      ]
+    });
+    s3form.bucket = CONFIG.S3_BUCKET;
+    _.extend(s3form.fields, metaUploader);
 
-	  res.render("index", {
-	    ejs: { view: "upload", title: "Upload image" },
-	    s3form: s3form,
-	    successFilename: successFilename
-	  });
-	}
-};
+    res.render("index", {
+      ejs: { view: "upload", title: "Upload image" },
+      s3form: s3form,
+      successFilename: successFilename
+    });
+  }
+  };
 
 exports.s3uploadDone = function(request, res, next){
   logger.info("S3 file uploaded", {
