@@ -29,7 +29,7 @@ exports.showGallery = function(request, res, next){
         var thumb = s3.getSignedUrl("getObject", {
           Bucket: CONFIG.S3_BUCKET,
           Key: obj.Key,
-          Expires: getStableExpiry()
+          Expires: getDiscreteExpiry()
         });
         thumbs.push({ name: filename, thumb: thumb });
       });
@@ -44,10 +44,10 @@ exports.showGallery = function(request, res, next){
   }
 };
 
-function getStableExpiry(){
-  var INTERVALS = 3600;
-  var MARGIN_MS = 5;
-  var timestamp = Math.floor((Date.now() + MARGIN_MS) / 1000);
+function getDiscreteExpiry(){
+  var INTERVALS = 3600 * 12;
+  var TUNE_MS = 0;
+  var timestamp = Math.floor((Date.now() + TUNE_MS) / 1000);
   return 2*INTERVALS - (timestamp % INTERVALS);
 }
 
@@ -56,7 +56,7 @@ exports.showImage = function(request, res, next){
   s3.getSignedUrl("getObject", {
     Bucket: CONFIG.S3_BUCKET,
     Key: s3key,
-    Expires: getStableExpiry()
+    Expires: getDiscreteExpiry()
   }, function(err, url) {
     if(err){
       return next(err);
@@ -113,7 +113,11 @@ exports.processImages = function(request, res, next){
     if(err){
       return next(err);
     }
-    request.requestSuccess = true;
-    exports.showGallery(request, res, next);
+    res.redirect(303, "/processSuccess");
   });
+};
+
+exports.processSuccess = function(request, res, next){
+  request.requestSuccess = true;
+  exports.showGallery(request, res, next);
 };

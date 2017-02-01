@@ -28,6 +28,7 @@ app.get("/s3done", uploadController.s3uploadDone);
 app.get("/gallery", imagesController.showGallery);
 app.get("/image/:key*", imagesController.showImage);
 app.post("/process", imagesController.processImages);
+app.get("/processSuccess", imagesController.processSuccess);
 app.get("/logs", logsController.showLogs);
 
 // this goes last:

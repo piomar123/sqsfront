@@ -14,6 +14,7 @@ module.exports = {
     { val: "levels", name: "Auto levels" },
     { val: "edge", name: "Edge detection" },
     { val: "blur", name: "Gaussian blur" },
-    { val: "noise", name: "Noise reduction" }
+    { val: "noise", name: "Noise reduction" },
+    { val: "emboss", name: "Emboss" }
   ]
 };
