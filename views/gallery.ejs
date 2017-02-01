@@ -5,6 +5,24 @@ function selectAll(){
 </script>
 <form action="/process" method="post">
 	<div class="container">
+		<% if(previousSuccess){ %>
+		<div class="row">
+			<div class="col-sm-offset-3 col-sm-6">
+				<div class="alert alert-success">
+					<strong>Processing requested to back-end workers via AWS SQS.</strong> Results should be available shortly.
+				</div>
+			</div>
+		</div>
+		<% } %>
+		<% if(removedImages){ %>
+		<div class="row">
+			<div class="col-sm-offset-3 col-sm-6">
+				<div class="alert alert-warning">
+					Removed <%= removedImages %> selected image<%= (removedImages > 1) ? 's' : '' %>.
+				</div>
+			</div>
+		</div>
+		<% } %>
 		<div class="row">
 			<div class="col-md-12">
 				<h1>Processing actions</h1>
@@ -16,13 +34,20 @@ function selectAll(){
 						</label>
 					</div>
 				<% i++; }); %>
-				<input class="btn btn-success" type="submit" value="Process selected" />
+				<input class="btn btn-success" type="submit" name="process" value="Process selected" />
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-sm-12" style="margin-bottom: 20px;">
+			<div class="col-sm-12">
 				<h1>Gallery</h1>
-				<a class="btn btn-info btn-sm" onclick="selectAll();">Select all images</a>
+			</div>
+		</div>
+		<div class="row" style="margin-bottom: 20px;">
+			<div class="col-xs-6">
+				<a class="btn btn-info" onclick="selectAll();">Select all images</a>
+			</div>
+			<div class="col-xs-6" style="text-align: right;">
+				<input class="btn btn-danger btn-sm" type="submit" name="remove" value="Remove selected" />
 			</div>
 		</div>
 	</div>

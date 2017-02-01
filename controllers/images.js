@@ -15,7 +15,7 @@ exports.showGallery = function(request, res, next){
     if(err){
       next(err);
     }
-    console.log(data.Contents);
+    // console.log(data.Contents);
     var thumbs = [];
     data.Contents.forEach(function(obj){
       var filename = _.last(obj.Key.split("/"));
@@ -29,7 +29,9 @@ exports.showGallery = function(request, res, next){
     res.render("index", {
       ejs: { view: "gallery", title: "Gallery" },
       thumbs: thumbs,
-      actions: CONFIG.ACTIONS
+      actions: CONFIG.ACTIONS,
+      previousSuccess: request.requestSuccess,
+      removedImages: request.removedImages
     });
   }
 };
@@ -51,6 +53,27 @@ exports.processImages = function(request, res, next){
   if(!request.body.images){
     return next(new Error("Images not specified."));
   }
+  if(request.body.remove){
+    var toDelete = [];
+    request.body.images.forEach(function(img){
+      toDelete.push({ Key: CONFIG.S3_KEY_PREFIX_UPLOAD + img });
+      toDelete.push({ Key: CONFIG.S3_KEY_PREFIX_THUMBS + img });
+    });
+    s3.deleteObjects({
+      Bucket: CONFIG.S3_BUCKET,
+      Delete: {
+        Objects: toDelete
+      }
+    }, function(err){
+      if(err){
+        return next(err);
+      }
+      request.removedImages = request.body.images.length;
+      exports.showGallery(request, res, next);
+    });
+    return;
+  }
+  
   if(!request.body.actions){
     return next(new Error("No actions specified."));
   }
@@ -69,7 +92,11 @@ exports.processImages = function(request, res, next){
           }
         }, done);
     }, done);
-  }, function(err){
-    return next(err);
+  }, function(err) {
+    if(err){
+      return next(err);
+    }
+    request.requestSuccess = true;
+    exports.showGallery(request, res, next);
   });
 };
