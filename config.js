@@ -13,6 +13,7 @@ module.exports = {
   ACTIONS: [
     { val: "levels", name: "Auto levels" },
     { val: "edge", name: "Edge detection" },
-    { val: "blur", name: "Gaussian blur" }
+    { val: "blur", name: "Gaussian blur" },
+    { val: "noise", name: "Noise reduction" }
   ]
 };

@@ -28,7 +28,8 @@ exports.showGallery = function(request, res, next){
         if(!filename) return;
         var thumb = s3.getSignedUrl("getObject", {
           Bucket: CONFIG.S3_BUCKET,
-          Key: obj.Key
+          Key: obj.Key,
+          Expires: getStableExpiry()
         });
         thumbs.push({ name: filename, thumb: thumb });
       });
@@ -43,11 +44,19 @@ exports.showGallery = function(request, res, next){
   }
 };
 
+function getStableExpiry(){
+  var INTERVALS = 3600;
+  var MARGIN_MS = 5;
+  var timestamp = Math.floor((Date.now() + MARGIN_MS) / 1000);
+  return 2*INTERVALS - (timestamp % INTERVALS);
+}
+
 exports.showImage = function(request, res, next){
   var s3key = CONFIG.S3_KEY_PREFIX_UPLOAD + request.params.key;
   s3.getSignedUrl("getObject", {
     Bucket: CONFIG.S3_BUCKET,
-    Key: s3key
+    Key: s3key,
+    Expires: getStableExpiry()
   }, function(err, url) {
     if(err){
       return next(err);

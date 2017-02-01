@@ -1,76 +1,98 @@
 <script>
-function selectAll(){
-	$(":checkbox").prop("checked", true);
+function selectAll(mode){
+  $("#thumbnails :checkbox").prop("checked", mode);
+}
+
+function onSubmitProcess() {
+  if($("#thumbnails :checkbox:checked").length === 0){
+    alert("No images selected");
+    return false;
+  }
+  if($("#actions :checkbox:checked").length === 0){
+    alert("No actions selected");
+    return false;
+  }
+  return true;
+}
+
+function onSubmitRemove() {
+  var imgCount = $("#thumbnails :checkbox:checked").length;
+  if(imgCount === 0){
+    alert("No images selected");
+    return false;
+  }
+  return confirm("Are you sure to remove " + imgCount + " image(s)?");
 }
 </script>
 <form action="/process" method="post">
-	<div class="container">
-		<% if(previousSuccess){ %>
-		<div class="row">
-			<div class="col-sm-offset-3 col-sm-6">
-				<div class="alert alert-success">
-					<strong>Processing requested to back-end workers via AWS SQS.</strong> Results should be available shortly.
-				</div>
-			</div>
-		</div>
-		<% } %>
-		<% if(removedImages){ %>
-		<div class="row">
-			<div class="col-sm-offset-3 col-sm-6">
-				<div class="alert alert-warning">
-					Removed <%= removedImages %> selected image<%= (removedImages > 1) ? 's' : '' %>.
-				</div>
-			</div>
-		</div>
-		<% } %>
-		<div class="row">
-			<div class="col-md-12">
-				<h1>Processing actions</h1>
-				<% var i = 0; actions.forEach(function(action){ %>
-					<div class="checkbox">
-						<label for="action-<%= i %>">
-							<input type="checkbox" name="actions[]" id="action-<%= i %>" value="<%= action.val %>">
-							<%= action.name %>
-						</label>
-					</div>
-				<% i++; }); %>
-				<input class="btn btn-success" type="submit" name="process" value="Process selected" />
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-12">
-				<h1>Gallery</h1>
-			</div>
-		</div>
-		<div class="row" style="margin-bottom: 20px;">
-			<div class="col-xs-6">
-				<a class="btn btn-info" onclick="selectAll();">Select all images</a>
-			</div>
-			<div class="col-xs-6" style="text-align: right;">
-				<input class="btn btn-danger btn-sm" type="submit" name="remove" value="Remove selected" />
-			</div>
-		</div>
-	</div>
+  <div class="container">
+    <% if(previousSuccess){ %>
+    <div class="row">
+      <div class="col-sm-offset-3 col-sm-6">
+        <div class="alert alert-success">
+          <strong>Processing requested to back-end workers via AWS SQS.</strong> Results should be available shortly.
+        </div>
+      </div>
+    </div>
+    <% } %>
+    <% if(removedImages){ %>
+    <div class="row">
+      <div class="col-sm-offset-3 col-sm-6">
+        <div class="alert alert-warning">
+          Removed <%= removedImages %> selected image<%= (removedImages > 1) ? 's' : '' %>.
+        </div>
+      </div>
+    </div>
+    <% } %>
+    <div class="row" id="actions">
+      <div class="col-md-12">
+        <h1>Processing actions</h1>
+        <% var i = 0; actions.forEach(function(action){ %>
+          <div class="checkbox">
+            <label for="action-<%= i %>">
+              <input type="checkbox" name="actions[]" id="action-<%= i %>" value="<%= action.val %>">
+              <%= action.name %>
+            </label>
+          </div>
+        <% i++; }); %>
+        <input class="btn btn-success" type="submit" name="process" value="Process selected" onclick="return onSubmitProcess();"/>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <h1>Gallery</h1>
+      </div>
+    </div>
+    <div class="row" style="margin-bottom: 20px;">
+      <div class="col-xs-6">
+        <a class="btn btn-info" onclick="selectAll(true);">Select all images</a>
+        <a class="btn btn-info" onclick="selectAll(false);">Deselect all images</a>
+      </div>
+      <div class="col-xs-6" style="text-align: right;">
+        <input class="btn btn-danger btn-sm" type="submit" name="remove" value="Remove selected" onclick="return onSubmitRemove();"/>
+      </div>
+    </div>
+  </div>
 <div class="container-fluid">
-	<div class="row">
+  <div class="row" id="thumbnails">
     <% var i = 0; thumbs.forEach(function(entry){ %>
-			<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
-				<div class="thumbnail">
-					<a href="/image/<%= entry.name %>">
-						<img class="img-responsive" src="<%= entry.thumb %>" title="<%= entry.name %>" alt="<%= entry.name %>" />
-					</a>
-					<div class="caption x-thumb-caption">
-						<div class="checkbox x-no-margin">
-							<label for="image-<%= i %>" class="x-thumb-label" title="<%= entry.name %>">
-								<input type="checkbox" id="image-<%= i %>" name="images[]" value="<%= entry.name %>" />
-								<%= entry.name %>
-							</label>
-						</div>
-					</div>
-				</div>
-			</div>
+      <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+        <div class="thumbnail">
+          <a href="/image/<%= entry.name %>">
+            <img class="img-responsive" src="<%= entry.thumb %>" title="<%= entry.name %>" alt="<%= entry.name %>" />
+          </a>
+          <div class="caption x-thumb-caption">
+            <div class="checkbox x-no-margin">
+              <label for="image-<%= i %>" class="x-thumb-label" title="<%= entry.name %>">
+                <input type="checkbox" id="image-<%= i %>" name="images[]" value="<%= entry.name %>" />
+                <%= entry.name %>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
     <% i++; }); %>
-		</div>
-	</div>
+    </div>
+  </div>
 </div>
 </form>
