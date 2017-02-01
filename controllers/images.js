@@ -13,39 +13,47 @@ exports.showGallery = function(request, res, next){
 
   function afterListedObjects(err, data){
     if(err){
-      next(err);
+      return next(err);
     }
     // console.log(data.Contents);
-    var thumbs = [];
-    data.Contents.forEach(function(obj){
-      var filename = _.last(obj.Key.split("/"));
-      if(!filename) return;
-      var thumb = s3.getSignedUrl("getObject", {
-        Bucket: CONFIG.S3_BUCKET,
-        Key: obj.Key
+    aws.config.getCredentials(afterCredentialsRefresh);
+
+    function afterCredentialsRefresh(err) {
+      if(err){
+        return next(err);
+      }
+      var thumbs = [];
+      data.Contents.forEach(function(obj){
+        var filename = _.last(obj.Key.split("/"));
+        if(!filename) return;
+        var thumb = s3.getSignedUrl("getObject", {
+          Bucket: CONFIG.S3_BUCKET,
+          Key: obj.Key
+        });
+        thumbs.push({ name: filename, thumb: thumb });
       });
-      thumbs.push({ name: filename, thumb: thumb });
-    });
-    res.render("index", {
-      ejs: { view: "gallery", title: "Gallery" },
-      thumbs: thumbs,
-      actions: CONFIG.ACTIONS,
-      previousSuccess: request.requestSuccess,
-      removedImages: request.removedImages
-    });
+      res.render("index", {
+        ejs: { view: "gallery", title: "Gallery" },
+        thumbs: thumbs,
+        actions: CONFIG.ACTIONS,
+        previousSuccess: request.requestSuccess,
+        removedImages: request.removedImages
+      });
+    }
   }
 };
 
 exports.showImage = function(request, res, next){
   var s3key = CONFIG.S3_KEY_PREFIX_UPLOAD + request.params.key;
-  var url = s3.getSignedUrl("getObject", {
+  s3.getSignedUrl("getObject", {
     Bucket: CONFIG.S3_BUCKET,
     Key: s3key
+  }, function(err, url) {
+    if(err){
+      return next(err);
+    }
+    res.redirect(303, url);
   });
-  if(!url){
-    return next();
-  }
-  res.redirect(303, url);
 };
 
 exports.processImages = function(request, res, next){
@@ -73,7 +81,7 @@ exports.processImages = function(request, res, next){
     });
     return;
   }
-  
+
   if(!request.body.actions){
     return next(new Error("No actions specified."));
   }

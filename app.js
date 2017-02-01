@@ -2,9 +2,12 @@ var express = require("express");
 var app = express();
 var bodyParser = require("body-parser");
 var aws = require("aws-sdk");
+var fs = require("fs");
 var CONFIG = require("./config");
 
-aws.config.loadFromPath(CONFIG.AWS_CONFIG_FILE);
+if(fs.existsSync(CONFIG.AWS_CONFIG_FILE)){
+  aws.config.loadFromPath(CONFIG.AWS_CONFIG_FILE);
+}
 
 var uploadController = require("./controllers/upload");
 var imagesController = require("./controllers/images");

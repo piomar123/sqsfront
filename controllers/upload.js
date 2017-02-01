@@ -1,18 +1,12 @@
 var aws = require("aws-sdk");
 var AwsS3Form = require("aws-s3-form");
 var sqs = new aws.SQS();
-var fs = require("fs");
 var _ = require("lodash");
 var logger = require("../logic/logger");
 var utils = require("../utils");
 var CONFIG = require("../config");
 
-if(!fs.existsSync(CONFIG.AWS_CONFIG_FILE)) {
-	throw new Error("Unable to read config file: " + CONFIG.AWS_CONFIG_FILE);
-}
-var awsConfig = JSON.parse(fs.readFileSync(CONFIG.AWS_CONFIG_FILE, { encoding:"utf8" }));
-
-exports.showUploadForm = function(request, res) {
+exports.showUploadForm = function(request, res, next) {
   var successFilename = null;
   if(request.uploadSuccess === true){
     var filename = _.last(request.query.key.split("/"));
@@ -23,32 +17,39 @@ exports.showUploadForm = function(request, res) {
       host: request.hostname
     });
   }
+	aws.config.getCredentials(afterCredentialsRefresh);
 
-  var formGen = new AwsS3Form({
-    accessKeyId:      awsConfig.accessKeyId,
-    secretAccessKey:	awsConfig.secretAccessKey,
-    region:           awsConfig.region,
-    bucket:           CONFIG.S3_BUCKET,
-    keyPrefix:        CONFIG.S3_KEY_PREFIX_UPLOAD,
-    acl:              "private"
-  });
+	function afterCredentialsRefresh(err){
+		if(err){
+			return next(err);
+		}
+		console.log("Region:" + aws.config.region);
+	  var formGen = new AwsS3Form({
+	    accessKeyId:      aws.config.credentials.accessKeyId,
+	    secretAccessKey:	aws.config.credentials.secretAccessKey,
+	    region:           aws.config.region,
+	    bucket:           CONFIG.S3_BUCKET,
+	    keyPrefix:        CONFIG.S3_KEY_PREFIX_UPLOAD,
+	    acl:              "private"
+	  });
 
-  var metaUploader = { "x-amz-meta-uploader": request.connection.remoteAddress };
+	  var metaUploader = { "x-amz-meta-uploader": request.connection.remoteAddress };
 
-  var s3form = formGen.create("${filename}", {
-    redirectUrlTemplate: utils.myAddress(request) + "/s3done",
-    customConditions: [
-      metaUploader
-    ]
-  });
-  s3form.bucket = CONFIG.S3_BUCKET;
-  _.extend(s3form.fields, metaUploader);
+	  var s3form = formGen.create("${filename}", {
+	    redirectUrlTemplate: utils.myAddress(request) + "/s3done",
+	    customConditions: [
+	      metaUploader
+	    ]
+	  });
+	  s3form.bucket = CONFIG.S3_BUCKET;
+	  _.extend(s3form.fields, metaUploader);
 
-  res.render("index", {
-    ejs: { view: "upload", title: "Upload image" },
-    s3form: s3form,
-    successFilename: successFilename
-  });
+	  res.render("index", {
+	    ejs: { view: "upload", title: "Upload image" },
+	    s3form: s3form,
+	    successFilename: successFilename
+	  });
+	}
 };
 
 exports.s3uploadDone = function(request, res, next){
