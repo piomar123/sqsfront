@@ -1,5 +1,6 @@
 module.exports = {
   AWS_CONFIG_FILE: "./config.json",
+  AWS_REGION: "us-west-2",
   SERVER_PORT: 8080,
   DB_DOMAIN: "piotr.marcinczyk.logs",
   LOG_PREFIX: "project-log-",

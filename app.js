@@ -7,6 +7,8 @@ var CONFIG = require("./config");
 
 if(fs.existsSync(CONFIG.AWS_CONFIG_FILE)){
   aws.config.loadFromPath(CONFIG.AWS_CONFIG_FILE);
+} else {
+  aws.config.update({ region: CONFIG.AWS_REGION });
 }
 
 var uploadController = require("./controllers/upload");
