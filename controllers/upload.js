@@ -23,7 +23,6 @@ exports.showUploadForm = function(request, res, next) {
     if(err){
     return next(err);
     }
-    console.log("Region:" + aws.config.region);
     var formGen = new AwsS3Form({
       accessKeyId:      aws.config.credentials.accessKeyId,
       secretAccessKey:	aws.config.credentials.secretAccessKey,

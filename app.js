@@ -18,7 +18,7 @@ var errorController = require("./controllers/error");
 
 app.set("view engine", "ejs");
 app.disable("view cache");
-app.enable("trust proxy");  // forward client IP when behind Elastic Load Balancer
+app.set("trust proxy", true);  // forward client IP when behind Elastic Load Balancer
 app.use("/static", express.static("views/static", { fallthrough:false, index:false }));
 app.use(bodyParser.urlencoded({ extended: true }));
 

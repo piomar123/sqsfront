@@ -45,16 +45,22 @@ var log = function(level, message, details){
     });
 };
 
-var getLogs = function(cb){
+var getLogs = function(cb, query){
+	query = query || {};
 	simpledb.select({
 		SelectExpression: "SELECT * FROM `"+
 			CONFIG.DB_DOMAIN +
-			"` WHERE timestamp IS NOT NULL ORDER BY timestamp DESC"
+			"` WHERE timestamp IS NOT NULL " +
+			(query.debug !== undefined ? "" : " AND level != 'debug'") +
+			" ORDER BY timestamp DESC"
 	}, function(err, data){
 		if(err) {
 			return cb(err);
 		}
 		var out = { raw: data, parsed: [] };
+		if(!data.Items){
+			return cb(null, out);
+		}
 		data.Items.forEach(function(item){
 			var entry = { id: item.Name };
 			item.Attributes.forEach(function(attr){

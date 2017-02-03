@@ -13,5 +13,5 @@ var afterGetLogs = function(request, res) {
 };
 
 exports.showLogs = function(req, res) {
-  logger.getLogs(afterGetLogs(req, res));
+  logger.getLogs(afterGetLogs(req, res), req.query);
 };
