@@ -1,14 +1,14 @@
 <script>
 function selectAll(mode){
-  $("#thumbnails :checkbox").prop("checked", mode);
+  $("#thumbnails").find(":checkbox").prop("checked", mode);
 }
 
 function onSubmitProcess() {
-  if($("#thumbnails :checkbox:checked").length === 0){
+  if($("#thumbnails").find(":checkbox:checked").length === 0){
     alert("No images selected");
     return false;
   }
-  if($("#actions :checkbox:checked").length === 0){
+  if($("#actions").find(":checkbox:checked").length === 0){
     alert("No actions selected");
     return false;
   }
@@ -16,7 +16,7 @@ function onSubmitProcess() {
 }
 
 function onSubmitRemove() {
-  var imgCount = $("#thumbnails :checkbox:checked").length;
+  var imgCount = $("#thumbnails").find(":checkbox:checked").length;
   if(imgCount === 0){
     alert("No images selected");
     return false;
@@ -46,17 +46,23 @@ function onSubmitRemove() {
     </div>
     <% } %>
     <div class="row" id="actions">
-      <div class="col-md-12">
-        <h1>Processing actions</h1>
-        <% var i = 0; actions.forEach(function(action){ %>
-          <div class="checkbox">
-            <label for="action-<%= i %>">
-              <input type="checkbox" name="actions[]" id="action-<%= i %>" value="<%= action.val %>">
-              <%= action.name %>
-            </label>
+      <div class="col-sm-offset-3 col-sm-6">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h1 class="panel-title">Processing actions</h1>
           </div>
-        <% i++; }); %>
-        <input class="btn btn-success" type="submit" name="process" value="Process selected" onclick="return onSubmitProcess();"/>
+          <div class="panel-body" style="padding-top: 0;">
+            <% var i = 0; actions.forEach(function(action){ %>
+              <div class="checkbox">
+                <label for="action-<%= i %>">
+                  <input type="checkbox" name="actions[]" id="action-<%= i %>" value="<%= action.val %>">
+                  <%= action.name %>
+                </label>
+              </div>
+            <% i++; }); %>
+            <input class="btn btn-success" type="submit" name="process" value="Process selected" onclick="return onSubmitProcess();"/>
+          </div>
+        </div>
       </div>
     </div>
     <div class="row">

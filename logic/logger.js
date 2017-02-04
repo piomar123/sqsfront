@@ -29,7 +29,7 @@ var log = function(level, message, details){
 		ItemName: CONFIG.LOG_PREFIX + uuid.v1(),
 		Attributes: []
 	};
-	details.timestamp = moment().format("YYYY-MM-DD HH:mm:ss.SSS");
+	details.timestamp = moment.utc().format("YYYY-MM-DD HH:mm:ss.SSS");
 	details.level = level;
 	details.message = message;
 	details.module = "frontend";
